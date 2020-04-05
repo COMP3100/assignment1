@@ -1,0 +1,21 @@
+Suggested headings for simulator design document (max. 5 pages including everything; the entire submission is 5 pages or fewer)
+
+Project title: 
+no more than 100 characters (approximately 14 words), e.g., Cloud job scheduler or Cost-efficient resource allocator for distributed systems.
+
+Group members: Siobhan O'Malley (45167648) & Matthew Long (45154929)
+full names and student numbers, e.g., Young Choon Lee (12345678).
+
+Introduction: 
+What this project is about focusing on stage 1
+
+System  overview: 
+high-level description of the system (both client-side simulator and server-side simulator with the focus being your client-side simulator) including design philosophy, considerations and constraints.
+
+System architecture: 
+description of the system including components/functions of the system and their design and functionalities; preferably, with a figure showing these components and their relationships (this figure may be in System overview).
+
+Implementation details: 
+brief description of any implementation specific information including technologies, techniques, software libraries and data structures used. How each of components/functions of your simulator is implemented including who is in charge of which function(s) and how they have led the design and development.
+
+References including Bitbucket project repository/wiki

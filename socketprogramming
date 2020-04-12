@@ -1,36 +1,63 @@
 import java.io.*;
 import java.net.*;
+	
+public class client {
+	static Socket s = null;
+	static PrintWriter out = null;
+	static InputStreamReader in = null;
+	static BufferedReader bufIn = null;
+	static String input = "";
+	
+	public static String writeToServer(String message) {
+		try {
+			out = new PrintWriter(s.getOutputStream());
+			out.println(message);
+			System.out.println("Client: " + message);
+			out.flush();
 
-public class SocketClient {
-
+			in = new InputStreamReader(s.getInputStream());
+			bufIn = new BufferedReader(in);
+			input = bufIn.readLine();
+			System.out.println("Server: " + input);
+		} catch (IOException e) {
+			System.out.println("IOException in writeToServer " + e);
+		}
+		return input;
+	}
+	
 	public static void main(String[] args) {
-		Socket s = null;
-		DataInputStream in = null;
-	    	DataOutputStream out = null;
-	    
-	    	try {
-	    		s = new Socket("127.0.0.1", 50000);
-			BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-	    		PrintWriter out = new PrintWriter(s.getOutputStream(), true);
-		}
-		
-		
-		
-	    		out.writeUTF(args[0]);
-	    		String data = in.readUTF();
-	    	
-	    		System.out.println("Got data: " + data);
-	    	} catch (IOException e) {
-	    		System.out.println(e);
-	  	  } finally {
-	    		if (s != null) {
-	    			try {
-	    				s.close();
-	    			} catch (IOException e) {
-	    				System.out.println(e);
-	    			}
-	    		}
-	  	  }
+		try {
+			s = new Socket("127.0.0.1", 50000);
+			System.out.println("Connected to sevrer");
+
+			writeToServer("HELO");
+			if (input.equals("OK")) {
+				writeToServer("AUTH " + System.getProperty("user.name"));
+			}
+			if (input.endsWith("OK")) {
+				while (!input.equals(null) && !input.equals("QUIT")) {
+					writeToServer("REDY");
+					if (input.equals("JOBN")) {
+						writeToServer("RESC");
+						while (input.startsWith("DATA")) {
+							writeToServer("OK");
+						}
+						if (input.equals("OK")) {
+							break;
+						} else if (input.startsWith("ERR")) {
+							writeToServer("NXTJ");
+						} else if (input.equals("NONE")) {
+							writeToServer("QUIT");
+						}
+					}
+				}
+			}
+
+			s.close();
+
+		} catch (IOException e) {
+			System.out.println("IO Exception in main " + e);
 		}
 
+	}
 }

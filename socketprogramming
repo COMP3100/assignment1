@@ -5,29 +5,32 @@ public class SocketClient {
 
 	public static void main(String[] args) {
 		Socket s = null;
-	    DataInputStream in = null;
-	    DataOutputStream out = null;
+		DataInputStream in = null;
+	    	DataOutputStream out = null;
 	    
-	    try {
-	    	s = new Socket("127.0.0.1", 50000);
-	    	in = new DataInputStream(s.getInputStream());
-	    	out = new DataOutputStream(s.getOutputStream());
+	    	try {
+	    		s = new Socket("127.0.0.1", 50000);
+			BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+	    		PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+		}
+		
+		
+		
+	    		out.writeUTF(args[0]);
+	    		String data = in.readUTF();
 	    	
-	    	out.writeUTF(args[0]);
-	    	String data = in.readUTF();
-	    	
-	    	System.out.println("Got data: " + data);
-	    } catch (IOException e) {
-	    	System.out.println(e);
-	    } finally {
-	    	if (s != null) {
-	    		try {
-	    			s.close();
-	    		} catch (IOException e) {
-	    			System.out.println(e);
+	    		System.out.println("Got data: " + data);
+	    	} catch (IOException e) {
+	    		System.out.println(e);
+	  	  } finally {
+	    		if (s != null) {
+	    			try {
+	    				s.close();
+	    			} catch (IOException e) {
+	    				System.out.println(e);
+	    			}
 	    		}
-	    	}
-	    }
-	}
+	  	  }
+		}
 
 }

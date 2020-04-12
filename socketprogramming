@@ -1,0 +1,33 @@
+import java.io.*;
+import java.net.*;
+
+public class SocketClient {
+
+	public static void main(String[] args) {
+		Socket s = null;
+	    DataInputStream in = null;
+	    DataOutputStream out = null;
+	    
+	    try {
+	    	s = new Socket("127.0.0.1", 50000);
+	    	in = new DataInputStream(s.getInputStream());
+	    	out = new DataOutputStream(s.getOutputStream());
+	    	
+	    	out.writeUTF(args[0]);
+	    	String data = in.readUTF();
+	    	
+	    	System.out.println("Got data: " + data);
+	    } catch (IOException e) {
+	    	System.out.println(e);
+	    } finally {
+	    	if (s != null) {
+	    		try {
+	    			s.close();
+	    		} catch (IOException e) {
+	    			System.out.println(e);
+	    		}
+	    	}
+	    }
+	}
+
+}

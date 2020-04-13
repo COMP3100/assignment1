@@ -2,62 +2,65 @@ import java.io.*;
 import java.net.*;
 	
 public class client {
-	static Socket s = null;
-	static PrintWriter out = null;
-	static InputStreamReader in = null;
-	static BufferedReader bufIn = null;
-	static String input = "";
 	
-	public static String writeToServer(String message) {
+	
+	public static void writeToServer(Socket s, String message) {
 		try {
-			out = new PrintWriter(s.getOutputStream());
+			PrintWriter out = new PrintWriter(s.getOutputStream());
 			out.println(message);
 			System.out.println("Client: " + message);
 			out.flush();
-
-			in = new InputStreamReader(s.getInputStream());
-			bufIn = new BufferedReader(in);
+		} catch (IOException e) {
+			System.out.println("IOException in writeToServer " + e);
+		}
+	}
+	
+	public static String readFromServer(Socket s) {
+		String input = "";
+		try {
+			InputStreamReader in = new InputStreamReader(s.getInputStream());
+			BufferedReader bufIn = new BufferedReader(in);
 			input = bufIn.readLine();
 			System.out.println("Server: " + input);
 		} catch (IOException e) {
-			System.out.println("IOException in writeToServer " + e);
+			System.out.println("IOException in readFromServer " + e);
 		}
 		return input;
 	}
 	
 	public static void main(String[] args) {
 		try {
-			s = new Socket("127.0.0.1", 50000);
+			Socket s = new Socket("127.0.0.1", 50000);
 			System.out.println("Connected to sevrer");
+			
+			String fromServer = "";
+			
+			writeToServer(s, "HELO");
+			fromServer = readFromServer(s);
+			
+			writeToServer(s, "AUTH " + System.getProperty("user.name"));
+			fromServer = readFromServer(s);
 
-			writeToServer("HELO");
-			if (input.equals("OK")) {
-				writeToServer("AUTH " + System.getProperty("user.name"));
-			}
-			if (input.endsWith("OK")) {
-				while (!input.equals(null) && !input.equals("QUIT")) {
-					writeToServer("REDY");
-					if (input.equals("JOBN")) {
-						writeToServer("RESC");
-						while (input.startsWith("DATA")) {
-							writeToServer("OK");
-						}
-						if (input.equals("OK")) {
-							break;
-						} else if (input.startsWith("ERR")) {
-							writeToServer("NXTJ");
-						} else if (input.equals("NONE")) {
-							writeToServer("QUIT");
-						}
+			while (!fromServer.equals("NONE")) {
+				writeToServer(s, "REDY");
+				fromServer = readFromServer(s);
+				if (fromServer.startsWith("JOBN")) {
+					writeToServer(s, "SCHD * large 0");
+					fromServer = readFromServer(s);
+					if (fromServer.equals("OK")) {
+						System.out.println("job done, next one");
 					}
 				}
 			}
-
-			s.close();
-
+			writeToServer(s, "QUIT");
+			fromServer = readFromServer(s);
+			if (fromServer.equals("QUIT")) {
+				s.close();
+			}
 		} catch (IOException e) {
 			System.out.println("IO Exception in main " + e);
 		}
 
 	}
 }
+

@@ -61,6 +61,7 @@ public class Client {
 
 	}
 	
+	//Function to write to the server
 	public static void writeToServer(Socket s, String message) {
 		try {
 			PrintWriter out = new PrintWriter(s.getOutputStream());
@@ -71,6 +72,7 @@ public class Client {
 		}
 	}
 	
+	//Function to read from the server
 	public static String readFromServer(Socket s) {
 		String input = "";
 		try {
@@ -83,9 +85,11 @@ public class Client {
 		return input;
 	}
 	
+	//Function to implement the AllToLargest algorithm
 	public static void allToLargest() {
 		int largest = 0; 
 		for (int i = 1; i < allServers.size(); i++) {
+			//compare the size of the servers
 			if (allServers.get(largest).coreCount < allServers.get(i).coreCount) {
 				largest = i;
 			}
@@ -93,6 +97,7 @@ public class Client {
 		schedulingDecision = "SCHD " + jobDetails[2] + " " + allServers.get(largest).type + " " + "0";
 	}
 	
+	//Function to implement the FirstFit algorithm
 	public static void firstFit() {
 		String[] serverDetails = null;
 		
@@ -104,6 +109,7 @@ public class Client {
 			if (fromServer.contentEquals("DATA")) {
 				writeToServer(s, "OK");
 				fromServer = readFromServer(s);
+				//Handle if the server returns no available servers
 				if (fromServer.contentEquals(".")) {
 					allToLargest();
 					break;

@@ -115,32 +115,5 @@ public class Client {
 			writeToServer(s, "OK");
 			fromServer = readFromServer(s);
 		}
-	}
-	
-	public static void bestFit() {
-		String[] serverDetails = null;
-		
-		writeToServer(s, "RESC All");
-		//readfromServer
-		//while fromServer != "."
-			//if fromServer == "DATA"
-				//writeToServer "OK"
-				//readfromServer
-				//if fromServer == "."
-					//run first fit
-					//break;
-			//fromServer.split(" ")
-			//if this server has sufficent resources to run job
-				//calculate fitness value (coreCount - jobDetails[4])
-				//calculate available time (jobDetails[3])
-				//if this server has a better fitness value then current best OR it has an equal fitness value AND a better available time
-					//set this server to current best
-					//set minAvailTime to this available time 
-			//writeToServer "OK"
-		//set scheduling decision to current best
-		
-		int fitnessValue = 1000;
-		int tempFV = Integer.parseInt(jobDetails[4]);
-	}
-	
+	}	
 }
